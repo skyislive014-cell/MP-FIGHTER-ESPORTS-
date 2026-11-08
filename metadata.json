@@ -1,0 +1,6 @@
+{
+  "name": "MP FIGHTER - Free Fire Tournament App",
+  "description": "Professional Free Fire battle royale esports tournament platform with duo team registration, room ID and password release, live points table, match schedules, winner hall of fame, bilingual Hindi/English support, and comprehensive admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
