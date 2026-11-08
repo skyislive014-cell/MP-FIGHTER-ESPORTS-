@@ -1,0 +1,12 @@
+
+{
+  "name": "MP FIGHTER ESPORTS",
+  "short_name": "MP FIGHTER",
+  "description": "Madhya Pradesh Free Fire Esports Arena",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050816",
+  "theme_color": "#ff9d00"
+}
