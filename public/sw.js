@@ -1,39 +1,70 @@
+const CACHE_NAME = "mp-fighter-v2";
 
-const CACHE_NAME = "mp-fighter-v1";
 const ASSETS = [
   "/",
   "/manifest.json"
 ];
 
+// Install
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS);
     })
   );
+
   self.skipWaiting();
 });
 
+// Activate
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.filter((key) => key !== CACHE_NAME)
+        keys
+          .filter((key) => key !== CACHE_NAME)
           .map((key) => caches.delete(key))
       )
     )
   );
+
   self.clients.claim();
 });
 
+// Fetch
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+  const request = event.request;
+
+  if (
+    request.method !== "GET" ||
+    new URL(request.url).origin !== self.location.origin
+  ) return;
 
   event.respondWith(
-    fetch(event.request).catch(() =>
-      caches.match(event.request).then((response) =>
-        response || caches.match("/")
-      )
-    )
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
+          const copy = response.clone();
+
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, copy);
+          });
+        }
+
+        return response;
+      })
+      .catch(async () => {
+        const cached = await caches.match(request);
+
+        if (cached) return cached;
+
+        if (request.mode === "navigate") {
+          return caches.match("/");
+        }
+
+        return new Response("Offline", {
+          status: 503
+        });
+      })
   );
 });
